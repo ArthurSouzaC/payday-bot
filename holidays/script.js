@@ -72,7 +72,8 @@ function verifyPayDay(showLogs) {
 function daysRemaining(date) {
   return date.diff(moment(), 'days');
 }
-async function payDay(showLogs) {
+
+export async function payDay(showLogs) {
   await isHolidayUptodate();
   const nextPayDay = verifyPayDay(showLogs);
   const remainingDays = daysRemaining(nextPayDay);
@@ -84,5 +85,3 @@ async function payDay(showLogs) {
     remainingDays,
   };
 }
-
-payDay(true);
