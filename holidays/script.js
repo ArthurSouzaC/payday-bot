@@ -75,7 +75,7 @@ function daysRemaining(date) {
 
 export async function payDay(showLogs) {
   await isHolidayUptodate();
-  const nextPayDay = verifyPayDay(showLogs);
+  const nextPayDay = verifyPayDay(showLogs).format('DD/MM/YYYY');
   const remainingDays = daysRemaining(nextPayDay);
   if (showLogs) {
     console.log(`Dias até o próximo pagamento: ${remainingDays}`);
