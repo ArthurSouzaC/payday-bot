@@ -69,19 +69,20 @@ function verifyPayDay(showLogs) {
     );
   return currentPayDay;
 }
+
 function daysRemaining(date) {
   return date.diff(moment(), 'days');
 }
 
 export async function payDay(showLogs) {
   await isHolidayUptodate();
-  const nextPayDay = verifyPayDay(showLogs).format('DD/MM/YYYY');
+  const nextPayDay = verifyPayDay(showLogs);
   const remainingDays = daysRemaining(nextPayDay);
   if (showLogs) {
     console.log(`Dias até o próximo pagamento: ${remainingDays}`);
   }
   return {
-    nextPayDay,
+    nextPayDay: nextPayDay.format('DD/MM/YYYY'),
     remainingDays,
   };
 }
