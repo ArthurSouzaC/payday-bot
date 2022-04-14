@@ -1,5 +1,5 @@
 export default {
     name: '!peidei',
     description: '?',
-    execute: (msg) => { msg.channel.reply("Corno!") }
+    execute: (msg) => { msg.reply("Corno!") }
 }
