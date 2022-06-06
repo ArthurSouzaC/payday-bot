@@ -46,7 +46,10 @@ function getCurrentPayDay(_date, showLogs) {
     }
     date.add(1, 'day');
   }
-  return date.add(1, 'day');
+  
+  date.add(1, 'day')
+
+  return date;
 }
 function verifyPayDay(showLogs) {
   if (showLogs) console.log('Primeira verificação:');
