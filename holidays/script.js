@@ -47,7 +47,7 @@ function getCurrentPayDay(_date, showLogs) {
     date.add(1, 'day');
   }
   
-  date.add(1, 'day')
+  date.add(1, 'day');
 
   return date;
 }
@@ -73,19 +73,32 @@ function verifyPayDay(showLogs) {
   return currentPayDay;
 }
 
-function daysRemaining(date) {
+function daysRemaining(_date) {
+  let date = _date.add(1, 'day');
   return date.diff(moment(), 'days');
+}
+
+function workingDaysRemaining(date, showLogs) {
+  let days = 0;
+  while(date.diff(moment(), date) != 0) {
+    if (date.weekday() != 6 && date.weekday() != 7 && !isHoliday(date, showLogs)) {
+      days++;
+    }
+  }
+  return days;
 }
 
 export async function payDay(showLogs) {
   await isHolidayUptodate();
   const nextPayDay = verifyPayDay(showLogs);
   const remainingDays = daysRemaining(nextPayDay);
+  const workingDays = workingDaysRemaining(nextPayDay, showLogs);
   if (showLogs) {
     console.log(`Dias até o próximo pagamento: ${remainingDays}`);
   }
   return {
     nextPayDay: nextPayDay.format('DD/MM/YYYY'),
     remainingDays,
+    workingDays
   };
 }
