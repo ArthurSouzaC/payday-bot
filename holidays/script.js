@@ -51,7 +51,7 @@ function getCurrentPayDay(_date) {
 function verifyPayDay() {
   let currentPayDay = getCurrentPayDay(moment());
   if (moment().diff(currentPayDay, 'day') <= 0) return currentPayDay;
-  currentPayDay = getCurrentPayDay(moment().add(2, 'month'));
+  currentPayDay = getCurrentPayDay(moment().add(1, 'month'));
   return currentPayDay;
 }
 
