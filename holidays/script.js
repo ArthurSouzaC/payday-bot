@@ -28,74 +28,54 @@ async function isHolidayUptodate() {
   }
 }
 
-function isHoliday(date, showLogs) {
+function isHoliday(date) {
   const holiday = holidays[date.format('YYYY-MM-DD')];
-  if (holiday) {
-    if (showLogs)
-      console.log(`Dia: "${date.format('YYYY-MM-DD')}"\nFeriado: "${holiday}"`);
+  if (holiday)
     return true;
-  }
+
   return false;
 }
-function getCurrentPayDay(_date, showLogs) {
+function getCurrentPayDay(_date) {
   const date = _date.startOf('month');
-  let i = 1;
-  while (i < 5) {
-    if (date.weekday() != 7 && !isHoliday(date, showLogs)) {
-      i++;
-    }
-    date.add(1, 'day');
-  }
+  let workingDays = 0;
   
-  date.add(1, 'day');
+  while(workingDays < 5) {
+    if(date.weekday() != 0 && !isHoliday(date))
+      workingDays++;
 
+    if(workingDays < 5) 
+      date.add(1, 'day');
+  }
   return date;
 }
-function verifyPayDay(showLogs) {
-  if (showLogs) console.log('Primeira verificação:');
-  let currentPayDay = getCurrentPayDay(moment(), showLogs);
-  if (showLogs) {
-    console.log(
-      `Próximo dia do pagamento: ${currentPayDay.format('DD/MM/YYYY')}`
-    );
-  }
+function verifyPayDay() {
+  let currentPayDay = getCurrentPayDay(moment());
   if (moment().diff(currentPayDay, 'day') <= 0) return currentPayDay;
-  if (showLogs) {
-    console.log('Data inválida');
-    console.log('_____________________________________________');
-    console.log('Segunda verificação:');
-  }
-  currentPayDay = getCurrentPayDay(moment().add(1, 'month'), showLogs);
-  if (showLogs)
-    console.log(
-      `Próximo dia do pagamento: ${currentPayDay.format('DD/MM/YYYY')}`
-    );
+  currentPayDay = getCurrentPayDay(moment().add(2, 'month'));
   return currentPayDay;
 }
 
 function daysRemaining(_date) {
-  let date = _date.add(1, 'day');
-  return date.diff(moment(), 'days');
+  return _date.diff(moment(), 'days') + 1;
 }
 
-function workingDaysRemaining(date, showLogs) {
+function workingDaysRemaining(_date) {
   let days = 0;
-  while(date.diff(moment(), date) != 0) {
-    if (date.weekday() != 6 && date.weekday() != 7 && !isHoliday(date, showLogs)) {
+  let date = moment();
+  while(_date.diff(date, 'days') != 0) {
+    if (date.weekday() != 0 && date.weekday() != 6 && !isHoliday(date))
       days++;
-    }
+    date.add(1, 'day');
   }
-  return days;
+  return days + 1;
 }
 
-export async function payDay(showLogs) {
+export async function payDay() {
   await isHolidayUptodate();
-  const nextPayDay = verifyPayDay(showLogs);
+  const nextPayDay = verifyPayDay();
   const remainingDays = daysRemaining(nextPayDay);
-  const workingDays = workingDaysRemaining(nextPayDay, showLogs);
-  if (showLogs) {
-    console.log(`Dias até o próximo pagamento: ${remainingDays}`);
-  }
+  const workingDays = workingDaysRemaining(nextPayDay);
+
   return {
     nextPayDay: nextPayDay.format('DD/MM/YYYY'),
     remainingDays,
